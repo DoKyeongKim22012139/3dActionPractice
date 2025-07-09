@@ -239,7 +239,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 924136447322616994, guid: 203326381d9b54d489646c6c2f61f53a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1516266505}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 547435428816858648, guid: 203326381d9b54d489646c6c2f61f53a, type: 3}
       insertIndex: -1
@@ -267,11 +270,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 708f9a73811d9b043a94a866efcdd31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   damage: 0
-  rate: 0
+  rate: 0.15
+  maxAmmo: 30
+  curAmmo: 30
   meleeArea: {fileID: 0}
   trailEffect: {fileID: 0}
+  bulletPos: {fileID: 1852826633}
+  bullet: {fileID: 5532129494024088840, guid: 1ed3699008e40954f9f746f2d5c8489d, type: 3}
+  bulletCasePos: {fileID: 1516266505}
+  bulletCase: {fileID: 223273915804709043, guid: 47efc72f7e37ad548a5b43f17146b2cc, type: 3}
 --- !u!1 &98580463
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,8 +448,14 @@ MonoBehaviour:
   type: 0
   damage: 20
   rate: 0.4
+  maxAmmo: 7
+  curAmmo: 7
   meleeArea: {fileID: 143903055}
   trailEffect: {fileID: 914878453}
+  bulletPos: {fileID: 0}
+  bullet: {fileID: 0}
+  bulletCasePos: {fileID: 0}
+  bulletCase: {fileID: 0}
 --- !u!1 &149967893
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +471,7 @@ GameObject:
   - component: {fileID: 149967898}
   m_Layer: 0
   m_Name: Wall (3)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -935,6 +950,10 @@ PrefabInstance:
     - target: {fileID: 6727341047606702564, guid: c76960ef0ff1daa48b3538ab5e45deca, type: 3}
       propertyPath: m_Name
       value: Item Heart
+      objectReference: {fileID: 0}
+    - target: {fileID: 6727341047606702564, guid: c76960ef0ff1daa48b3538ab5e45deca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5860,6 +5879,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5903297864969995812, guid: 8f5e135a19626f544908fc8f156144b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1852826633}
     - targetCorrespondingSourceObject: {fileID: 883724508928496280, guid: 8f5e135a19626f544908fc8f156144b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 200458147}
@@ -5906,7 +5928,8 @@ MonoBehaviour:
   - {fileID: 395210425}
   - {fileID: 1680584689}
   hasGrenade: 0
-  ammo: 0
+  followCamera: {fileID: 963194227}
+  ammo: 100
   coin: 0
   health: 100
   maxAmmo: 999
@@ -6109,6 +6132,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 646644119}
   orbitSpeed: 20
+--- !u!1 &779081872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 779081873}
+  m_Layer: 0
+  m_Name: Case Pos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &779081873
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779081872}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.226, y: 0.705, z: -0.043}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2044093215}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &914878451
 GameObject:
   m_ObjectHideFlags: 0
@@ -11363,7 +11417,7 @@ GameObject:
   - component: {fileID: 1055192962}
   m_Layer: 0
   m_Name: Wall (1)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -11533,6 +11587,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item Ammo
       objectReference: {fileID: 0}
+    - target: {fileID: 1168454645391501817, guid: c50ce4f8588bcfe40bc17b97039983a3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11631,7 +11689,7 @@ GameObject:
   - component: {fileID: 1399563414}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -11836,6 +11894,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8018429946725390617, guid: 10653eccf6b69fd47938a227b4bf3863, type: 3}
   m_PrefabInstance: {fileID: 1410998155}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1516266504
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1516266505}
+  m_Layer: 0
+  m_Name: Case Pos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1516266505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516266504}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.134, y: 0.752, z: -0.297}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 55896479}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1517707445 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6490352389010560924, guid: 10653eccf6b69fd47938a227b4bf3863, type: 3}
@@ -16752,6 +16841,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon Grenade
       objectReference: {fileID: 0}
+    - target: {fileID: 8293663328434620134, guid: 77efc1808e58f7f4d979c663a4273a0f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16777,7 +16870,7 @@ GameObject:
   - component: {fileID: 1766985400}
   m_Layer: 0
   m_Name: Wall (2)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -16895,6 +16988,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1852826632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1852826633}
+  m_Layer: 0
+  m_Name: Bullet Pos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1852826633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852826632}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 2.5, z: 1.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 646644119}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1951018516
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16906,6 +17030,10 @@ PrefabInstance:
     - target: {fileID: 2768651745796707047, guid: 3188fff337b757b49a060df2208e8d0d, type: 3}
       propertyPath: m_Name
       value: Coin Gold
+      objectReference: {fileID: 0}
+    - target: {fileID: 2768651745796707047, guid: 3188fff337b757b49a060df2208e8d0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9218497251855621950, guid: 3188fff337b757b49a060df2208e8d0d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17003,6 +17131,10 @@ PrefabInstance:
     - target: {fileID: 4568807478063142332, guid: a72e170d4248f0643bc91dba785c9ef6, type: 3}
       propertyPath: m_Name
       value: Coin Silver
+      objectReference: {fileID: 0}
+    - target: {fileID: 4568807478063142332, guid: a72e170d4248f0643bc91dba785c9ef6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17154,6 +17286,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin Bronze
       objectReference: {fileID: 0}
+    - target: {fileID: 7500944508513496966, guid: aec06099e3e62fa4baa52d9f3c5c70ac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7900933738756138815, guid: aec06099e3e62fa4baa52d9f3c5c70ac, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6895211
@@ -17257,7 +17393,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2285952976136801637, guid: a2e051660762cbe4494c17a095a95e10, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 779081873}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1509416925549156319, guid: a2e051660762cbe4494c17a095a95e10, type: 3}
       insertIndex: -1
@@ -17285,11 +17424,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 708f9a73811d9b043a94a866efcdd31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   damage: 0
-  rate: 0
+  rate: 0.4
+  maxAmmo: 7
+  curAmmo: 7
   meleeArea: {fileID: 0}
   trailEffect: {fileID: 0}
+  bulletPos: {fileID: 1852826633}
+  bullet: {fileID: 7096271455445207044, guid: 7f887c5e0b157624cb16e8aa17261c8e, type: 3}
+  bulletCasePos: {fileID: 779081873}
+  bulletCase: {fileID: 223273915804709043, guid: 47efc72f7e37ad548a5b43f17146b2cc, type: 3}
 --- !u!1 &2123679541 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6490352389010560924, guid: 10653eccf6b69fd47938a227b4bf3863, type: 3}
