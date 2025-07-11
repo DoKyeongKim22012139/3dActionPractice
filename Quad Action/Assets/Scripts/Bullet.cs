@@ -8,14 +8,20 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Floor")
+        if (collision.gameObject.tag == "Floor")
         {
             Destroy(gameObject, 3);
         }
 
-        else if(collision.gameObject.tag == "Wall")
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Wall")
         {
             Destroy(gameObject);
         }
     }
+
 }

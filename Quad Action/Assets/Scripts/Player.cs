@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     bool isDodge;
     bool isReload;
     bool isFireReady =true;
+    bool isBorder;
 
     Rigidbody rigid;
     Vector3 moveVec;
@@ -115,7 +116,9 @@ public class Player : MonoBehaviour
         {
             moveVec = Vector3.zero;
         }
-        transform.position += moveVec * speed * (wDown ? 0.3f : 1f) * Time.deltaTime;
+
+        if(!isBorder)
+             transform.position += moveVec * speed * (wDown ? 0.3f : 1f) * Time.deltaTime;
 
 
         anime.SetBool("isRun", moveVec != Vector3.zero);
@@ -273,6 +276,25 @@ public class Player : MonoBehaviour
         }
     }
 
+
+    void FreezeRotation()
+    {
+        rigid.angularVelocity = Vector3.zero; // angularveclciy 회전 물리속도
+    }
+
+    void StopToWall()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.green); //레이어 발사
+        isBorder = Physics.Raycast(transform.position, transform.forward, 5, LayerMask.GetMask("Wall"));
+    }
+
+
+    void FixedUpdate()
+    {
+        FreezeRotation();
+        StopToWall();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag =="Floor")
@@ -328,7 +350,7 @@ public class Player : MonoBehaviour
         if(other.tag=="Weapon")
         {
             nearObject = other.gameObject;
-            Debug.Log(nearObject.name);
+            //Debug.Log(nearObject.name);
         }
 
        
