@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public bool[] hasWeapons;
     public GameObject[] grenades;
     public int hasGrenade;
-
+    public GameObject grenadeObj;
 
     public Camera followCamera; //마우스로 카메라 회전
 
@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
 
     bool wDown;
     bool jDown;
+    bool gDown;
     bool iDown;
     bool fDown;
     bool rDown;
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour
         Move();
         Turn();
         Jump();
+        Grenade();
         Attack();
         Reload();
         Dodge();
@@ -94,6 +96,7 @@ public class Player : MonoBehaviour
         wDown = Input.GetButton("Walk");
         jDown = Input.GetButtonDown("Jump");
         fDown = Input.GetButton("Fire1");
+        gDown = Input.GetButtonDown("Fire2");
         rDown = Input.GetButtonDown("Reload");
         iDown = Input.GetButtonDown("Interaction");
         sDown1 = Input.GetButtonDown("Swap1");
@@ -157,6 +160,30 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Grenade()
+    {
+        if (hasGrenade == 0)
+            return;
+
+        if(gDown && !isReload &&!isSwap )
+        {
+            Ray ray = followCamera.ScreenPointToRay(Input.mousePosition); //마우스가 가리키는 방향으로 ray발사
+            RaycastHit rayHit;
+            if (Physics.Raycast(ray, out rayHit, 100)) //out return처럼 반환값을 주어진 변수에 저장하는 키워드 ray가 읽은거를 rayhit에 저장
+            {
+                Vector3 nextVec = rayHit.point - transform.position; //rayhit포인트는 충돌지점의 월드 좌표
+                nextVec.y = 10;
+
+                GameObject instantGrenade = Instantiate(grenadeObj, transform.position, transform.rotation);
+                Rigidbody rigidGrenade = instantGrenade.GetComponent<Rigidbody>();
+                rigidGrenade.AddForce(nextVec, ForceMode.Impulse);
+                rigidGrenade.AddTorque(Vector3.back *10, ForceMode.Impulse);
+                hasGrenade--;
+
+                grenades[hasGrenade].SetActive(false);
+            }
+        }
+    }
 
     void Attack()
     {
