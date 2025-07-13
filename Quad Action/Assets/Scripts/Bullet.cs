@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public int damamge;
-
+    public bool isMelee;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Wall")
+        if (!isMelee && other.gameObject.tag == "Wall")
         {
             Destroy(gameObject);
         }
