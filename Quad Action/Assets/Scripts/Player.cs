@@ -372,20 +372,23 @@ public class Player : MonoBehaviour
         }
         else if (other.tag == "EnemyBullet")
         {
-            if(!isDamaged)
+            
+            if (!isDamaged)
             {
+                
                 Bullet enemyBullet = other.GetComponent<Bullet>();
                 health -= enemyBullet.damamge;
-                if(other.GetComponent<Rigidbody>()!=null)
-                    Destroy(other.gameObject);
-
-                StartCoroutine(OnDamage());
+               
+                bool isBossAtk = other.name == "Boss Melee Area";
+                StartCoroutine(OnDamage(isBossAtk));
             }
-            
+
+            if (other.GetComponent<Rigidbody>() != null)
+                Destroy(other.gameObject);
         }
     }
 
-    IEnumerator OnDamage()
+    IEnumerator OnDamage(bool isBossAtk)
     {
         isDamaged = true;
 
@@ -393,12 +396,17 @@ public class Player : MonoBehaviour
         {
             mesh.material.color = Color.yellow;
         }
+
+        if (isBossAtk)
+            rigid.AddForce(transform.forward * -25, ForceMode.Impulse);
         yield return new WaitForSeconds(1f);
         isDamaged = false;
         foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.white;
         }
+        if (isBossAtk)
+            rigid.velocity= Vector3.zero;  
     }
 
     private void OnTriggerStay(Collider other)
