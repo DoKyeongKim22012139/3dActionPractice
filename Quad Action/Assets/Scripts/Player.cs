@@ -19,14 +19,12 @@ public class Player : MonoBehaviour
     public int ammo;
     public int coin;
     public int health;
-    
+    public int score;
 
     public int maxAmmo;
     public int maxCoin;
     public int maxHealth;
     public int maxHasGrenade;
-
-
 
     float hAxis;
     float vAxis;
@@ -41,8 +39,8 @@ public class Player : MonoBehaviour
     bool sDown1;
     bool sDown2;
     bool sDown3;
-    
-    
+
+    bool isShop;
     bool isSwap;
     bool isJump;
     bool isDodge;
@@ -56,7 +54,7 @@ public class Player : MonoBehaviour
 
     Animator anime;
     GameObject nearObject;
-    Weapon equipWeapon;
+    public Weapon equipWeapon;
     MeshRenderer[] meshs;
 
     float fireDelay;
@@ -68,6 +66,9 @@ public class Player : MonoBehaviour
         anime=GetComponentInChildren<Animator>();
         rigid=GetComponent<Rigidbody>();
         meshs=GetComponentsInChildren<MeshRenderer>();
+
+        Debug.Log(PlayerPrefs.GetInt("MaxScore"));
+        //PlayerPrefs.SetInt("MaxScore", 112500);
     }
 
     void Start()
@@ -153,7 +154,7 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
-        if(jDown && moveVec == Vector3.zero && !isJump &&!isDodge &&!isSwap)
+        if(jDown && moveVec == Vector3.zero && !isJump &&!isDodge &&!isSwap && !isShop)
         {
             rigid.AddForce(Vector3.up*20, ForceMode.Impulse);
             anime.SetBool("isJump", true);
@@ -194,7 +195,7 @@ public class Player : MonoBehaviour
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.rate < fireDelay;
 
-        if(fDown && isFireReady &&!isDodge &&!isSwap)
+        if(fDown && isFireReady &&!isDodge &&!isSwap &&!isShop)
         {
             equipWeapon.Use();
             anime.SetTrigger(equipWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
@@ -210,7 +211,7 @@ public class Player : MonoBehaviour
 
         if (ammo == 0) return; // 가진 총알이 없으면 리턴
 
-        if(rDown &&!isJump &&!isDodge && !isSwap && isFireReady)
+        if(rDown &&!isJump &&!isDodge && !isSwap && isFireReady && !isShop)
         {
             anime.SetTrigger("doReload");
             isReload = true;
@@ -222,14 +223,15 @@ public class Player : MonoBehaviour
 
     void ReloadOut()
     {
-        int reAmmo = ammo < equipWeapon.maxAmmo ? ammo : equipWeapon.maxAmmo; //가진 총알이 총의 최대 장전 총알보다 작으면 가진 총알을 넣고 많으면 최대치 넣기
-        equipWeapon.curAmmo = reAmmo; //그리고 현재총알을 채워주자
+        int needAmmo = equipWeapon.maxAmmo - equipWeapon.curAmmo; //필요한 총알 개수 
+        int reAmmo = ammo < needAmmo ? ammo : needAmmo; //가진 총알이 총의 최대 장전 총알보다 작으면 가진 총알을 넣고 많으면 최대치 넣기
+        equipWeapon.curAmmo +=reAmmo; //그리고 현재총알을 채워주자
         ammo -= reAmmo; //그리고 가진총알 빼자
         isReload = false;
     }
     void Dodge()
     {
-        if (jDown && moveVec != Vector3.zero && !isJump && !isDodge &&!isSwap)
+        if (jDown && moveVec != Vector3.zero && !isJump && !isDodge &&!isSwap && !isShop)
         {
             dodgeVec = moveVec;
             speed *= 2;
@@ -264,7 +266,7 @@ public class Player : MonoBehaviour
         if (sDown3) weaponIndex = 2;
 
 
-        if ( (sDown1 || sDown2 || sDown3) && !isJump && !isDodge )
+        if ( (sDown1 || sDown2 || sDown3) && !isJump && !isDodge && !isShop)
         {
             
             if (equipWeapon != null)
@@ -299,6 +301,16 @@ public class Player : MonoBehaviour
                 hasWeapons[weaponIndex] = true;
 
                 Destroy(nearObject );
+            }
+
+
+
+            else if (nearObject.tag == "Shop")
+            {
+                Shop shop = nearObject.GetComponent<Shop>();
+                shop.Enter(this);
+                isShop = true;
+                
             }
 
 
@@ -411,7 +423,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag=="Weapon")
+        if(other.tag=="Weapon" || other.tag== "Shop")
         {
             nearObject = other.gameObject;
             //Debug.Log(nearObject.name);
@@ -425,6 +437,14 @@ public class Player : MonoBehaviour
         if(other.tag=="Weapon")
         {
             nearObject = null;
+        }
+        else if (other.tag == "Shop")
+        {
+            Shop shop = other.GetComponent<Shop>();
+            shop.Exit();
+            isShop = false;
+            nearObject = null;
+            
         }
     }
 }
