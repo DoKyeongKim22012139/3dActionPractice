@@ -14,7 +14,10 @@ public class Player : MonoBehaviour
     public int hasGrenade;
     public GameObject grenadeObj;
 
+    public GameManager gameManager;
     public Camera followCamera; //마우스로 카메라 회전
+
+    public AudioSource jumpSound;
 
     public int ammo;
     public int coin;
@@ -48,6 +51,7 @@ public class Player : MonoBehaviour
     bool isFireReady =true;
     bool isBorder;
     bool isDamaged;
+    bool isDead;
     Rigidbody rigid;
     Vector3 moveVec;
     Vector3 dodgeVec;
@@ -68,7 +72,7 @@ public class Player : MonoBehaviour
         meshs=GetComponentsInChildren<MeshRenderer>();
 
         Debug.Log(PlayerPrefs.GetInt("MaxScore"));
-        //PlayerPrefs.SetInt("MaxScore", 112500);
+        
     }
 
     void Start()
@@ -118,7 +122,7 @@ public class Player : MonoBehaviour
             moveVec = dodgeVec;
         }
 
-        if (isSwap || !isFireReady ||isReload)
+        if (isSwap || !isFireReady ||isReload ||isDead)
         {
             moveVec = Vector3.zero;
         }
@@ -137,7 +141,7 @@ public class Player : MonoBehaviour
         transform.LookAt(transform.position + moveVec);
 
         //마우스에 의한 회전
-        if(fDown)
+        if(fDown && !isDead)
         {
             Ray ray = followCamera.ScreenPointToRay(Input.mousePosition); //마우스가 가리키는 방향으로 ray발사
             RaycastHit rayHit;
@@ -154,12 +158,14 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
-        if(jDown && moveVec == Vector3.zero && !isJump &&!isDodge &&!isSwap && !isShop)
+        if(jDown && moveVec == Vector3.zero && !isJump &&!isDodge &&!isSwap && !isShop &&!isDead)
         {
             rigid.AddForce(Vector3.up*20, ForceMode.Impulse);
             anime.SetBool("isJump", true);
             anime.SetTrigger("doJump");
             isJump = true;
+
+            jumpSound.Play();
         }
     }
 
@@ -168,7 +174,7 @@ public class Player : MonoBehaviour
         if (hasGrenade == 0)
             return;
 
-        if(gDown && !isReload &&!isSwap )
+        if(gDown && !isReload &&!isSwap && !isDead)
         {
             Ray ray = followCamera.ScreenPointToRay(Input.mousePosition); //마우스가 가리키는 방향으로 ray발사
             RaycastHit rayHit;
@@ -195,7 +201,7 @@ public class Player : MonoBehaviour
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.rate < fireDelay;
 
-        if(fDown && isFireReady &&!isDodge &&!isSwap &&!isShop)
+        if(fDown && isFireReady &&!isDodge &&!isSwap &&!isShop && !isDead)
         {
             equipWeapon.Use();
             anime.SetTrigger(equipWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
@@ -211,7 +217,7 @@ public class Player : MonoBehaviour
 
         if (ammo == 0) return; // 가진 총알이 없으면 리턴
 
-        if(rDown &&!isJump &&!isDodge && !isSwap && isFireReady && !isShop)
+        if(rDown &&!isJump &&!isDodge && !isSwap && isFireReady && !isShop && !isDead)
         {
             anime.SetTrigger("doReload");
             isReload = true;
@@ -231,7 +237,7 @@ public class Player : MonoBehaviour
     }
     void Dodge()
     {
-        if (jDown && moveVec != Vector3.zero && !isJump && !isDodge &&!isSwap && !isShop)
+        if (jDown && moveVec != Vector3.zero && !isJump && !isDodge &&!isSwap && !isShop && !isDead)
         {
             dodgeVec = moveVec;
             speed *= 2;
@@ -266,7 +272,7 @@ public class Player : MonoBehaviour
         if (sDown3) weaponIndex = 2;
 
 
-        if ( (sDown1 || sDown2 || sDown3) && !isJump && !isDodge && !isShop)
+        if ( (sDown1 || sDown2 || sDown3) && !isJump && !isDodge && !isShop && !isDead)
         {
             
             if (equipWeapon != null)
@@ -292,7 +298,7 @@ public class Player : MonoBehaviour
 
     void Interaction()
     {
-        if(iDown && nearObject!=null && !isJump && !isDodge)
+        if(iDown && nearObject!=null && !isJump && !isDodge && !isDead)
         {
             if(nearObject.tag=="Weapon")
             {
@@ -418,7 +424,18 @@ public class Player : MonoBehaviour
             mesh.material.color = Color.white;
         }
         if (isBossAtk)
-            rigid.velocity= Vector3.zero;  
+            rigid.velocity= Vector3.zero;
+
+        if (health <= 0 && !isDead)
+            OnDie();
+    }
+
+
+    void OnDie()
+    {
+        anime.SetTrigger("doDie");
+        isDead = true;
+        gameManager.GameOver();
     }
 
     private void OnTriggerStay(Collider other)
